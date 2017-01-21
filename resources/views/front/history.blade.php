@@ -1,16 +1,16 @@
 @extends('layout')
 
 @section('content')
-    <div class="container home">
+    <div class="container history">
         <div class="row">
-            <h1>Last 10 people's queries:</h1>
+            <h1>Last {{ count($items) }} people's queries:</h1>
+            <div id="map"></div><br/>
             @foreach($items as $item)
-                <p><a href="{{ route('front.prepareForecast',array($item->lng,$item->lat)) }}">{{ $item->name }}</a></p>
+                <p><a class="item-link" href="{{ route('front.prepareForecast',array('lng'=>$item->lng,'lat'=>$item->lat,'name'=>$item->name)) }}">{{ $item->name }}</a></p><hr style="width: 60%;">
             @endforeach
         </div>
-        <div id="map" style="width: 500px; height: 300px; margin: 0 auto; margin-top: 60px;"></div>
     </div>
     <script>
-        app.maps.init();
+        app.maps.initHistoryMap();
     </script>
 @endsection

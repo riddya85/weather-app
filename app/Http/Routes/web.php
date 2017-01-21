@@ -14,16 +14,19 @@ Route::group([
     'middleware' => 'web',
 ], function () {
     Route::get('/',['as'=>'front.home','uses'=>'Front\MainController@index']);
-    Route::post('/forecast/{lng}/{lat}', ['as'=>'front.prepareForecast','uses'=>'Front\MainController@prepareForecast']);
-    Route::get('/forecast/{lng}/{lat}', ['as'=>'front.prepareForecast','uses'=>'Front\MainController@prepareForecast']);
-//    Route::get('/history', ['as'=>'front.history','uses'=>'Front\MainController@history']);
-//    Route::get('/history/{user}', ['as'=>'front.userHistory','uses'=>'Front\MainController@userHistory']);
+
+    Route::get('/forecast', ['as'=>'front.prepareForecast','uses'=>'Front\MainController@prepareForecast']);
+    
+    Route::get('/history', ['as'=>'front.history','uses'=>'Front\MainController@history']);
+    Route::get('/history/user', ['as'=>'front.userHistory','uses'=>'Front\MainController@userHistory']);
+    
+    Route::post('/load-more-user/history', ['as'=>'front.loadUserHistory','uses'=>'Front\MainController@loadUserHistory']);
 });
 
 Route::group([
     'middleware' => 'auth',
 ], function () {
-
+    Route::get('/history/user/{user}', ['as'=>'admin.userHistory','uses'=>'Front\MainController@adminUserHistory']);
 });
 
 Auth::routes();
