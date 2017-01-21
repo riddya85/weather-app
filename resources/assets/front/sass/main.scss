@@ -60,6 +60,15 @@ body {
     }
 
     .auth-button {
+
+      a {
+        color: white !important;
+
+        &:hover {
+          text-shadow: 0px 0px 5px white;
+        }
+      }
+
       width: auto;
       height: 80px;
       display: inline-block;
@@ -75,11 +84,6 @@ body {
       transition: box-shadow 0.5s;
       -moz-transition: box-shadow 0.5s;
       -webkit-transition: box-shadow 0.5s;
-
-      &:hover {
-//        box-shadow: 0px 0px 10px gray inset;
-        text-shadow: 0px 0px 5px white;
-      }
     }
   }
 
@@ -200,6 +204,34 @@ body {
             }
           }
         }
+      }
+
+      &.auth {
+        .panel {
+          border: 0;
+
+          button[type="submit"] {
+            background-color: indianred;
+            border: 0;
+            float: left;
+          }
+
+          .checkbox {
+            float: left;
+          }
+
+          a {
+            float: left;
+          }
+
+          .panel-heading {
+            font-size: 30px;
+            background-color: transparent;
+            border: 0;
+          }
+        }
+
+
       }
 
       &.forecast {

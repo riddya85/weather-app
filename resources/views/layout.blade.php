@@ -18,25 +18,17 @@
                 <a href="{{ route('front.home') }}">Weather Forecast</a>
             </div>
             <div class="auth-button" style="">
-                Login
+                @if(Auth::check())
+                    <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Logout</a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
+                @else
+                    <a href="{{ route('login') }}">Sign In</a>
+                    <a href="{{ route('register') }}" style="margin-left: 10px;">Sign Up</a>
+                @endif
             </div>
         </header>
-        {{--<div class="flex-center position-ref full-height">--}}
-            {{--@if (Route::has('login'))--}}
-                {{--<div class="top-right links">--}}
-                    {{--@if (Auth::check())--}}
-                        {{--<a href="{{ url('/home') }}">Home</a>--}}
-                    {{--@else--}}
-                        {{--<a href="{{ url('/login') }}">Login</a>--}}
-                        {{--<a href="{{ url('/register') }}">Register</a>--}}
-                    {{--@endif--}}
-                {{--</div>--}}
-            {{--@endif--}}
-
-            {{--<div class="content">--}}
-                {{--@yield('content')--}}
-            {{--</div>--}}
-        {{--</div>--}}
         <main>
             @yield('content')
         </main>

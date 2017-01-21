@@ -16,9 +16,8 @@ Route::group([
     Route::get('/',['as'=>'front.home','uses'=>'Front\MainController@index']);
     Route::post('/forecast/{lng}/{lat}', ['as'=>'front.prepareForecast','uses'=>'Front\MainController@prepareForecast']);
     Route::get('/forecast/{lng}/{lat}', ['as'=>'front.prepareForecast','uses'=>'Front\MainController@prepareForecast']);
-//    Route::post('/forecast/-{lng}-{lat}', ['as'=>'front.prepareForecast','uses'=>'Front\MainController@prepareForecast']);
-//    Route::post('/forecast/{lng}{lat}', ['as'=>'front.prepareForecast','uses'=>'Front\MainController@prepareForecast']);
-//    Route::post('/forecast/-{lng}{lat}', ['as'=>'front.prepareForecast','uses'=>'Front\MainController@prepareForecast']);
+//    Route::get('/history', ['as'=>'front.history','uses'=>'Front\MainController@history']);
+//    Route::get('/history/{user}', ['as'=>'front.userHistory','uses'=>'Front\MainController@userHistory']);
 });
 
 Route::group([

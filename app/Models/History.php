@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class History extends Model
 {
-    use Notifiable;
 
-    CONST ROLE_ADMIN = 1,
-    ROLE_GUEST = 0;
+    protected $dates = ['created_at', 'updated_at'];
 
     /**
      * The attributes that are mass assignable.
@@ -18,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','role',
+        'name', 'user_id', 'lng','lat',
     ];
 
     /**
@@ -30,7 +27,7 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function history() {
-        return $this->hasMany('App\Models\History');
+    public function user() {
+        return $this->belongsTo('App\Models\User');
     }
 }

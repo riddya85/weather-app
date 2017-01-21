@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Front;
 
 use App\Http\Requests\Request;
+use App\Models\History;
+use Illuminate\Support\Facades\Auth;
 
 class ForecastRequest extends Request
 {
@@ -24,14 +26,27 @@ class ForecastRequest extends Request
     public function rules()   {
 	    return [
 		    'lng'=> "required",
-		    'lat'=> "sometimes"
+		    'lat'=> "required",
+			'name' => 'required'
 	    ];
     }
 
-
-	public function process(){
-
-		$data = $this->all();
-		
+	public function data(){
+		return $this->only(['lng','lat','name']);
 	}
+
+
+	public function saveHistory() {
+
+		$history = new History($this->data());
+
+		if (Auth::check()) {
+			$history->user()->associate(Auth::user());
+		} else {
+			$history->user_id = NULL;
+		}
+
+		$history->save();
+	}
+
 }
