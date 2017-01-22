@@ -15,7 +15,7 @@
                 <input type="submit" id="submitSearch" value="Search"/>
             </form>
         </div>
-        <div id="map" style="width: 500px; height: 300px; margin: 0 auto; margin-top: 60px;"></div>
+        <div id="map"></div>
         <div class="row" style="margin-top: 100px;">
             <div class="item">
                 <a href="{{ route('front.history') }}"><span>History</span></a>

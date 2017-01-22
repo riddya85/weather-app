@@ -52,7 +52,28 @@ class MainController extends Controller
 
         $dailyForecast = $info->daily;
 
-        return view('front.forecast',compact('currentForecast','hourlyForecast','dailyForecast','city'));
+        $timeLabels = array();
+        $dataSet = array();
+        $temperatures = array();
+        $feelsLikeTemp = array();
+
+        foreach ($hourlyForecast->data as $key => $item) {
+            if ($key != 24) {
+                $timeLabels[] = date('H:i',$item->time);
+
+                $temperatures[] = number_format(($item->temperature-32)*5/9,1);
+                $feelsLikeTemp[] = number_format(($item->apparentTemperature-32)*5/9,1);
+            } else {
+                break;
+            }
+        }
+
+        $dataSet[] = array('label'=>'Temparature','data'=>array($temperatures),'backgroundColor'=>'rgba(153,255,51,0.4)');
+        $dataSet[] = array('label'=>'Feels like','data'=>array($feelsLikeTemp),'backgroundColor'=>'rgba(255,153,0,0.4)');
+
+        $chartData = json_encode(array('data'=>$dataSet,'labels'=>$timeLabels));
+
+        return view('front.forecast',compact('currentForecast','hourlyForecast','dailyForecast','city','chartData'));
     }
 
     public function history() {

@@ -1,5 +1,9 @@
 @extends('layout')
-
+@section('javascript')
+<script>
+    app.chartData = {!! $chartData !!};
+</script>
+@endsection
 @section('content')
     <div class="container forecast">
         <div class="row main">
@@ -36,6 +40,7 @@
                 @endif
             @endforeach
         </div>
+        <canvas id="myChart" width="400px" height="400px"></canvas>
         <div class="row">
             <h2>Forecast for 3 days: </h2>
             <div class="daily">
@@ -74,4 +79,7 @@
             </div>
         </div>
     </div>
+    <script>
+        app.main.initChart();
+    </script>
 @endsection
