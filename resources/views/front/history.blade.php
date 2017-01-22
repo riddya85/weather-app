@@ -18,7 +18,7 @@
                     @endif
                 @endforeach
                 <div class="insert-before"></div>
-                @if(count($items) == 1)
+                @if(count($items) == 10)
                     <h1 class='load-more' data-user="0" id="load">Load more</h1>
                     <p class="load-more__message"></p>
                 @endif

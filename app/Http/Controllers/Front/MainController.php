@@ -77,7 +77,7 @@ class MainController extends Controller
     }
 
     public function history() {
-        $items = History::take(1)->orderBy('id','DESC')->get();
+        $items = History::take(10)->orderBy('id','DESC')->get();
 
         return view('front.history',compact('items'));
     }
@@ -107,12 +107,12 @@ class MainController extends Controller
 
         if ($user) {
             if ($user < 0) {
-                $items = History::where('id','<',$request->get('lastId'))->where('user_id',Auth::user()->id)->orderBy('id','DESC')->limit(1)->get();
+                $items = History::where('id','<',$request->get('lastId'))->where('user_id',Auth::user()->id)->orderBy('id','DESC')->limit(5)->get();
             } else {
-                $items = History::where('id','<',$request->get('lastId'))->where('user_id',$user)->orderBy('id','DESC')->limit(1)->get();
+                $items = History::where('id','<',$request->get('lastId'))->where('user_id',$user)->orderBy('id','DESC')->limit(5)->get();
             }
         } else {
-            $items = History::where('id','<',$request->get('lastId'))->orderBy('id','DESC')->limit(1)->get();
+            $items = History::where('id','<',$request->get('lastId'))->orderBy('id','DESC')->limit(5)->get();
         }
 
         return response()->json([
