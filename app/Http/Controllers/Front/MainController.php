@@ -8,6 +8,7 @@ use App\Models\History;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
 class MainController extends Controller
 {
@@ -55,7 +56,7 @@ class MainController extends Controller
     }
 
     public function history() {
-        $items = History::take(10)->orderBy('id','DESC')->get();
+        $items = History::take(1)->orderBy('id','DESC')->get();
 
         return view('front.history',compact('items'));
     }
@@ -63,7 +64,7 @@ class MainController extends Controller
     public function userHistory() {
         if (Auth::check()) {
             $user = Auth::user();
-            $items = History::where('user_id',$user->id)->orderBy('id','DESC')->limit(2)->get();
+            $items = History::where('user_id',$user->id)->orderBy('id','DESC')->limit(5)->get();
 
             return view('front.userHistory',compact('user','items'));
         } else {
@@ -72,28 +73,29 @@ class MainController extends Controller
     }
     
     public function adminUserHistory(User $user) {
-        $user = Auth::user();
-        
-        if ($user->role == User::ROLE_ADMIN) {
-            $items = History::where('user_id',$user->id)->orderBy('id','DESC')->limit(2)->get();
-
+        if (Auth::user()->role == User::ROLE_ADMIN) {
+            $items = History::where('user_id',$user->id)->orderBy('id','DESC')->limit(5)->get();
             return view('front.userHistory',compact('user','items'));
         } else {
             return redirect('/');
         }
     }
 
-    public function loadUserHistory(Request $request) {
-        $items = History::where('id','<',$request->get('lastId'))->where('user_id',Auth::user()->id)->orderBy('id','DESC')->limit(2)->get();
-        $response = array();
-        
-        if(count($items)) {
-            foreach ($items as $key => $item) {
-                $response['items'][] = array('link'=>route('front.prepareForecast',array('lng'=>$item->lng,'lat'=>$item->lat,'name'=>$item->name)),'name'=>$item->name);
-                if ($key == count($items)-1) $response['lastId'] = $item->id;
+    public function loadHistory(Request $request) {
+        $user = $request->get('user');
+
+        if ($user) {
+            if ($user < 0) {
+                $items = History::where('id','<',$request->get('lastId'))->where('user_id',Auth::user()->id)->orderBy('id','DESC')->limit(1)->get();
+            } else {
+                $items = History::where('id','<',$request->get('lastId'))->where('user_id',$user)->orderBy('id','DESC')->limit(1)->get();
             }
+        } else {
+            $items = History::where('id','<',$request->get('lastId'))->orderBy('id','DESC')->limit(1)->get();
         }
 
-        return response()->json($response);
+        return response()->json([
+            'template' => View::make('front.partials.historyLink')->with('items',$items)->render()
+        ]);
     }
 }

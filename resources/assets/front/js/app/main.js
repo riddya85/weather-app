@@ -5,22 +5,29 @@ var main = {
 
     },
     initHistoryLoad: function () {
-        $("#test").on('click',function() {
+        $("#load").on('click',function() {
             var lastId = $(".last-id").last().val();
+            var user = $(this).attr('data-user');
+
             $.ajax({
                 type: "POST",
-                url: app.apploadUserHistoryUrl,
+                url: app.uploadHistoryUrl,
                 data: {
                     lastId: lastId,
+                    user: user,
                     _token: window.Laravel.csrfToken
                 },
                 success: function (data) {
-                    data.items.forEach(function(item) {
-                        $('.insert-before').before("<p><a href='"+item.link+"' class='item-link'>"+item.name+"</a></p><hr style='width: 60%'/>");
-                    });
-                    $('.last-id').last().after("<input type='hidden' class='last-id' value='"+data.lastId+"'>");
+                    console.log(data);
+                    if (data.template) {
+                        $(data.template).hide().insertBefore('.insert-before').fadeIn(500);
+                    } else {
+                        $("#load").css('color','lightgray');
+                        $("p.load-more__message").hide().html('No more results').fadeIn(500);
+                    }
                 },
                 error: function (data) {
+                    alert("Something is wrong! Inform developer please!");
                     console.log(data);
                 }
             });

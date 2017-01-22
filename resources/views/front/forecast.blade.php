@@ -70,7 +70,7 @@
         </div>
         <div class="row" style="margin-top: 50px;">
             <div class="item">
-                <span>History</span>
+                <a href="{{ route('front.history') }}"><span>History</span></a>
             </div>
         </div>
     </div>
