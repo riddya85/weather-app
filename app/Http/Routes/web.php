@@ -24,7 +24,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => 'auth',
+    'middleware' => ['auth','admin'],
 ], function () {
     Route::get('/history/user/{user}', ['as'=>'admin.userHistory','uses'=>'Front\MainController@adminUserHistory']);
 });
