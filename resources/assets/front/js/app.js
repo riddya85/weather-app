@@ -16,5 +16,3 @@ global.app = {
     }
 
 };
-
-global.app.init();

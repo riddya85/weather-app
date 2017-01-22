@@ -29,7 +29,7 @@
             <h2>24h forecast: </h2>
             @foreach($hourlyForecast->data as $key => $day)
                 @if($key != 24)
-                    <div class="day" style="display: block; float: left; width: 25%; margin-top: 20px;">
+                    <div class="day">
                         <h3>{{ date('m.d H:i',$day->time) }}</h3>
                         <span class="temperature">
                             <span class="degree degree--small">{{ number_format(($day->temperature-32)*5/9,1) }} &deg;C</span> (feels like  <span class="degree degree--small">{{ number_format(($day->apparentTemperature-32)*5/9,1) }} &deg;C</span>)

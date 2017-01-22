@@ -3,7 +3,21 @@ var Chart = require('chart.js');
 
 var main = {
     init: function() {
+        main.initMobileMenu();
+    },
+    initMobileMenu: function() {
+        $('.open-menu').on('click',function() {
+            if ($(this).hasClass('active')) {
+                var item = $(this);
+                item.removeClass('active');
+                $("#menu").removeClass('active');
 
+            } else {
+                var item = $(this);
+                item.addClass('active');
+                $("#menu").addClass('active');
+            }
+        });
     },
     initHistoryLoad: function () {
         $("#load").on('click',function() {
