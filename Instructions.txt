@@ -1,0 +1,11 @@
+1. Create virtual host with root folder /public
+2. Give "read" and "write" permissions to /source and /bootstrap folders
+3. Create ".env" file and fill in the data (there is example inside)
+4. Install npm modules and composer
+5. Type "php artisan key:generate"
+6. Type "php artisan migrate"
+7. Enjoy the site
+
+
+
+P.S. If you have PHP version 5.4 or higher you can write "php artisan serve" and server will be created and u don't need virtual host. 
