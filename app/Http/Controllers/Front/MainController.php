@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\ForecastRequest;
 use App\Models\History;
 use App\Models\User;
+use App\Services\WeatherService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -34,58 +35,40 @@ class MainController extends Controller
 
     public function prepareForecast(ForecastRequest $request)
     {
-        $lat = $request->get('lat');
-        $lng = $request->get('lng');
-
-        $url = "https://api.darksky.net/forecast/".config('weatherForecast.APP_KEY')."/".$lat.",".$lng;
+        $weatherService = new WeatherService(config('weatherForecast.APP_KEY'));
 
         $city = $request->get('name');
 
+        $info = $weatherService->getData($request->get('lat'),$request->get('lng'));
+
         $request->saveHistory();
 
-        $info = file_get_contents($url);
-        $info = json_decode($info);
+        $currentForecast = $info['currentForecast'];
 
-        $currentForecast = $info->currently;
+        $hourlyForecast = $info['hourlyForecast'];
 
-        $hourlyForecast = $info->hourly;
+        $dailyForecast = $info['dailyForecast'];
 
-        $dailyForecast = $info->daily;
+        $summary = $info['summary'];
 
-        $timeLabels = array();
-        $dataSet = array();
-        $temperatures = array();
-        $feelsLikeTemp = array();
+        $chartData = $weatherService->prepareChartData($hourlyForecast);
 
-        foreach ($hourlyForecast->data as $key => $item) {
-            if ($key != 24) {
-                $timeLabels[] = date('H:i',$item->time);
-
-                $temperatures[] = number_format(($item->temperature-32)*5/9,1);
-                $feelsLikeTemp[] = number_format(($item->apparentTemperature-32)*5/9,1);
-            } else {
-                break;
-            }
-        }
-
-        $dataSet[] = array('label'=>'Temparature','data'=>array($temperatures),'backgroundColor'=>'rgba(153,255,51,0.4)');
-        $dataSet[] = array('label'=>'Feels like','data'=>array($feelsLikeTemp),'backgroundColor'=>'rgba(255,153,0,0.4)');
-
-        $chartData = json_encode(array('data'=>$dataSet,'labels'=>$timeLabels));
-
-        return view('front.forecast',compact('currentForecast','hourlyForecast','dailyForecast','city','chartData'));
+        return view('front.forecast',compact('currentForecast','hourlyForecast','dailyForecast','city','chartData','summary'));
     }
 
     public function history() {
-        $items = History::take(10)->orderBy('id','DESC')->get();
+        $history = new History();
+        $items = $history->getItems();
+
 
         return view('front.history',compact('items'));
     }
 
     public function userHistory() {
         if (Auth::check()) {
+            $history = new History();
             $user = Auth::user();
-            $items = History::where('user_id',$user->id)->orderBy('id','DESC')->limit(5)->get();
+            $items = $history->getUserItems($user->id);
 
             return view('front.userHistory',compact('user','items'));
         } else {
@@ -95,7 +78,9 @@ class MainController extends Controller
     
     public function adminUserHistory(User $user) {
         if (Auth::user()->role == User::ROLE_ADMIN) {
-            $items = History::where('user_id',$user->id)->orderBy('id','DESC')->limit(5)->get();
+            $history = new History();
+            $items = $history->getUserItems($user->id);
+
             return view('front.userHistory',compact('user','items'));
         } else {
             return redirect('/');
@@ -104,15 +89,17 @@ class MainController extends Controller
 
     public function loadHistory(Request $request) {
         $user = $request->get('user');
+        $history = new History();
+        $lastId = $request->get('lastId');
 
         if ($user) {
             if ($user < 0) {
-                $items = History::where('id','<',$request->get('lastId'))->where('user_id',Auth::user()->id)->orderBy('id','DESC')->limit(5)->get();
+                $items = $history->getMoreUserItems(Auth::user()->id,$lastId);
             } else {
-                $items = History::where('id','<',$request->get('lastId'))->where('user_id',$user)->orderBy('id','DESC')->limit(5)->get();
+                $items = $history->getMoreUserItems($user,$lastId);
             }
         } else {
-            $items = History::where('id','<',$request->get('lastId'))->orderBy('id','DESC')->limit(5)->get();
+            $items = $history->getMoreItems($lastId);
         }
 
         return response()->json([
