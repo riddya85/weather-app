@@ -8,4 +8,4 @@
 
 
 
-P.S. If you have PHP version 5.4 or higher you can write "php artisan serve" and server will be created and u don't need virtual host. 
+P.S. If you have PHP version 5.4 or higher you can write "php artisan serve" and server will be created and u don't need virtual host.
